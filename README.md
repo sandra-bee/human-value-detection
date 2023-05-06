@@ -16,7 +16,7 @@ Note that this project expects the following files in a `data` folder (not inclu
 * Write training/val losses to text file after generation so we can plot loss curves
 * Visualise results with confusion matrix(?)
 * Launch training on `deberta-v3-base` (instead of the `xsmall` version)
-* Tune hyperparameters
+* Tune hyperparameters, add early stopping during training
 * Improve the input. Currently, 2+ premises don't fit well with the template chosen
 * Allow training on true max token length instead of capping early 
 

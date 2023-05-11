@@ -19,7 +19,6 @@ The batch size during model training is set at 32, as this is the max size that 
 * Launch training on `deberta-v3-base` (instead of the `xsmall` version)
 * Tune hyperparameters
 * Improve the input. Currently, 2+ premises don't fit well with the template chosen e.g. change input to "[premise] is in favour of [conclusion]", "[premise]. These sentences upport [conclusion]"
-* Allow training on true max token length instead of capping early 
 
 ## References
 

@@ -22,17 +22,17 @@ if __name__ == '__main__':
     loaded_torch_test_data = read_data(test_x_set, test_y_set)
 
     # Feed tensors into DeBERTa and perform training:
-    detailed_train_loss_list, train_loss_list, val_loss_list = launch_model_training(loaded_torch_train_data, loaded_torch_val_data)
+    # detailed_train_loss_list, train_loss_list, val_loss_list = launch_model_training(loaded_torch_train_data, loaded_torch_val_data)
 
     # Perform testing:
-    # test_f1, _ = make_predictions(loaded_data=loaded_torch_test_data, mode='test', model=None)
-    # print(f"Results on testset: {test_f1}")
+    test_f1, _ = make_predictions(loaded_data=loaded_torch_test_data, mode='test', model=None)
+    print(f"Results on testset: {test_f1}")
 
     # Save data on the losses
-    store_loss([train_loss_list, val_loss_list], "train_val")
-    store_loss(detailed_train_loss_list, "detailed_train")
+    # store_loss([train_loss_list, val_loss_list], "train_val")
+    # store_loss(detailed_train_loss_list, "detailed_train")
 
     # Print graphs on the loss:
-    make_loss_graph(detailed_train_loss_list, "Training", detailed = True)
-    make_loss_graph([train_loss_list, val_loss_list], "Training and validation", detailed = False)
+    # make_loss_graph(detailed_train_loss_list, "Training", detailed = True)
+    # make_loss_graph([train_loss_list, val_loss_list], "Training and validation", detailed = False)
     # make_loss_graph(train_loss_list, "Testing", detailed = False)

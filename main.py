@@ -3,7 +3,6 @@ import torch
 from data_preprocessing import read_data
 from model_making import  launch_model_training, make_predictions
 
-
 if __name__ == '__main__':
     torch.set_default_device('cuda')  # Use GPU by default
 

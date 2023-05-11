@@ -18,7 +18,7 @@ Note that this project expects the following files in a `data` folder (not inclu
 * Launch training on `deberta-v3-base` (instead of the `xsmall` version)
 * Tune hyperparameters, add early stopping during training
 * Improve the input. Currently, 2+ premises don't fit well with the template chosen
-* ^ use different words for input. E.g. "[premise] is in favor of [conclusion]", "[premise]. These sentences are against [conclusion]"
+* E.g. change input to "[premise] is in favour of [conclusion]", "[premise]. These sentences upport [conclusion]"
 * Allow training on true max token length instead of capping early 
 
 ## References

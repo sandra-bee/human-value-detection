@@ -60,6 +60,8 @@ def launch_model_training(loaded_train_data, loaded_val_data):
     train_loss_list = []
     detailed_train_loss_list = []
     val_loss_list = []
+    patience = 4  # The number of times val loss can decrease from minimum until we run out of patience and stop early
+    val_loss_prev_epoch = 100
 
     for epoch in range(max_epochs):
 
@@ -87,7 +89,14 @@ def launch_model_training(loaded_train_data, loaded_val_data):
 
         # Launch model evaluation:
         model.eval()
-        val_f1_curr_epoch, val_loss = make_predictions(loaded_data=loaded_val_data, mode='validation', model=model)
+        val_f1_curr_epoch, val_loss_curr_epoch = make_predictions(loaded_data=loaded_val_data, mode='validation', model=model)
+
+        # Early stopping:
+        if epoch > 0 and val_loss_curr_epoch > val_loss_prev_epoch:
+            patience -= 1
+            if patience == 0:
+                break  # Stop early
+        val_loss_prev_epoch = val_loss_curr_epoch
 
         # Save best model config:
         if val_f1_curr_epoch > best_f1:
@@ -97,9 +106,9 @@ def launch_model_training(loaded_train_data, loaded_val_data):
         train_loss_curr_epoch = training_loss / num_training_steps
 
         train_loss_list.append(train_loss_curr_epoch)
-        val_loss_list.append(val_loss)
+        val_loss_list.append(val_loss_curr_epoch)
         print(f'Training loss: {train_loss_curr_epoch}')
-        print(f'Validation loss: {val_loss}')
+        print(f'Validation loss: {val_loss_curr_epoch}')
         print(f'Validation f1 score: {val_f1_curr_epoch}')
 
     return detailed_train_loss_list, train_loss_list, val_loss_list

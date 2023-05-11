@@ -34,7 +34,7 @@ def read_data(x_set, y_set):
     # Put the x and y together:
     tensor_dataset = TensorDataset(input_id, attention_mask, targets)
 
-    return DataLoader(tensor_dataset, batch_size=8)
+    return DataLoader(tensor_dataset, batch_size=32)
 
 
 # Put the data in the form of 3 disconnected sentences:

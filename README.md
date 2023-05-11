@@ -11,14 +11,12 @@ Note that this project expects the following files in a `data` folder (not inclu
 * labels-validation.tsv
 * labels-test.tsv
 
+The batch size during model training is set at 32, as this is the max size that didn't run out of memory on the test computer.
+
 ## TODO:
-* Data augmentation
-* Write training/val losses to text file after generation so we can plot loss curves
+* Put data after augmentation into a dataframe
 * Visualise results with confusion matrix(?)
-* Launch training on `deberta-v3-base` (instead of the `xsmall` version)
-* Tune hyperparameters, add early stopping during training
-* Improve the input. Currently, 2+ premises don't fit well with the template chosen
-* Allow training on true max token length instead of capping early 
+* Tune hyperparameters: lr, eps, patience
 
 ## References
 

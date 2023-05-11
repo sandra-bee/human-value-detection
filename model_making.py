@@ -43,6 +43,7 @@ def make_predictions(loaded_data, mode, model):
 
 
 def launch_model_training(loaded_train_data, loaded_val_data):
+
     loss_function = torch.nn.BCEWithLogitsLoss()
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -57,6 +58,7 @@ def launch_model_training(loaded_train_data, loaded_val_data):
     max_epochs = 50
     best_f1 = 0
     train_loss_list = []
+    detailed_train_loss_list = []
     val_loss_list = []
 
     for epoch in range(max_epochs):
@@ -70,15 +72,17 @@ def launch_model_training(loaded_train_data, loaded_val_data):
         for step, batch in enumerate(loaded_train_data):
             input_ids_batch, input_mask_batch, labels_batch = batch
             optimizer.zero_grad()
-            # Forward pass
+            # Forward pass:
             train_output = model(input_ids=input_ids_batch, token_type_ids=None,
                                  attention_mask=input_mask_batch, labels=labels_batch)
-            # Backward pass
+            # Backward pass:
             loss_tensor = loss_function(train_output.logits, labels_batch.to(device))
             loss_tensor.backward()
             # Update loss:
             optimizer.step()
             training_loss += loss_tensor.item()
+            # Also save loss per step for plotting:
+            detailed_train_loss_list.append(loss_tensor.item())
             num_training_steps += 1
 
         # Launch model evaluation:
@@ -97,3 +101,5 @@ def launch_model_training(loaded_train_data, loaded_val_data):
         print(f'Training loss: {train_loss_curr_epoch}')
         print(f'Validation loss: {val_loss}')
         print(f'Validation f1 score: {val_f1_curr_epoch}')
+
+    return detailed_train_loss_list, train_loss_list, val_loss_list

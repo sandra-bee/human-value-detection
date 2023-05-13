@@ -7,6 +7,6 @@ def save_into_file(path, filename, file_content, mode='w'):
         f.write(file_content)
 
 # Store the losses in separate files:
-def store_loss(loss, filename):
-    save_into_file('result_metrics/', filename + '_loss', str(loss))
+def store_list(list_of_vals, type_of_list, filename):
+    save_into_file('result_metrics/', filename + f'_{type_of_list}', str(list_of_vals))
 

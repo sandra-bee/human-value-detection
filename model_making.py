@@ -42,7 +42,7 @@ def make_predictions(loaded_data, mode, model):
     return mean_f1, mean_loss
 
 
-def launch_model_training(loaded_train_data, loaded_val_data):
+def launch_model_training(loaded_train_data, loaded_val_data, learning_rate, patience):
 
     loss_function = torch.nn.BCEWithLogitsLoss()
 
@@ -54,14 +54,14 @@ def launch_model_training(loaded_train_data, loaded_val_data):
                                                           num_labels=num_labels)
 
     # Set learning rate very low, the model is already pretrained:
-    optimizer = torch.optim.AdamW(model.parameters(), lr=5e-6, eps=1e-08)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate)
     max_epochs = 50
     best_f1 = 0
     train_loss_list = []
     detailed_train_loss_list = []
     val_loss_list = []
-    patience = 4  # The number of times val loss can decrease from minimum until we run out of patience and stop early
     val_loss_prev_epoch = 100
+    val_f1_list = []
 
     for epoch in range(max_epochs):
 
@@ -93,6 +93,7 @@ def launch_model_training(loaded_train_data, loaded_val_data):
 
         # Early stopping:
         if epoch > 0 and val_loss_curr_epoch > val_loss_prev_epoch:
+            # Patience is the number of times val loss can be larger than in previous run
             patience -= 1
             if patience == 0:
                 break  # Stop early
@@ -100,13 +101,14 @@ def launch_model_training(loaded_train_data, loaded_val_data):
 
         # Save best model config:
         if val_f1_curr_epoch > best_f1:
-            torch.save(model, 'best_model.pt')  # Save whole model
+            torch.save(model, f'models/best_model_lr{learning_rate}_ptn{patience}.pt')  # Save whole model
             best_f1 = val_f1_curr_epoch
 
         train_loss_list.append(train_loss_curr_epoch)
         val_loss_list.append(val_loss_curr_epoch)
+        val_f1_list.append(val_f1_curr_epoch)
         print(f'Training loss: {train_loss_curr_epoch}')
         print(f'Validation loss: {val_loss_curr_epoch}')
         print(f'Validation f1 score: {val_f1_curr_epoch}')
 
-    return detailed_train_loss_list, train_loss_list, val_loss_list
+    return detailed_train_loss_list, train_loss_list, val_loss_list, val_f1_list

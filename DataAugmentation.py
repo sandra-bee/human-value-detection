@@ -126,12 +126,17 @@ def save_data(dataset):
     dataset.to_csv('data/augmented-arguments-training.tsv', sep="\t", index=False)
 
 
+def save_labels(dataset):
+    dataset.to_csv('data/augmented-labels-training.tsv', sep="\t", index=False)
+
+
 def create_augmented_dataset_tsv():
     training_df = pd.read_csv('data/arguments-training.tsv', sep='\t')
     augmented_training_df = pd.DataFrame.copy(training_df)
-
+    labels_df = pd.read_csv('data/labels-training.tsv', sep='\t')
+    augmented_labels_df = pd.DataFrame.copy(labels_df)
     for i in range(0, len(training_df)):
-    # for i in range(0, 5):
+    #for i in range(0, 5):
         premise = training_df.loc[i]['Premise']
         noised_premise = add_noise_to_premise(premise)
         new_argument = pd.DataFrame({
@@ -140,7 +145,31 @@ def create_augmented_dataset_tsv():
             "Stance": training_df.loc[i]["Stance"],
             "Premise": noised_premise,
         })
+        new_labels = pd.DataFrame({
+            "Argument ID": labels_df.loc[i]["Argument ID"],
+            "Self-direction: thought": labels_df.loc[i]["Self-direction: thought"],
+            "Self-direction: action": labels_df.loc[i]["Self-direction: action"],
+            "Stimulation": labels_df.loc[i]["Stimulation"],
+            "Hedonism": labels_df.loc[i]["Hedonism"],
+            "Achievement": labels_df.loc[i]["Achievement"],
+            "Power: dominance": labels_df.loc[i]["Power: dominance"],
+            "Power: resources": labels_df.loc[i]["Power: resources"],
+            "Face": labels_df.loc[i]["Face"],
+            "Security: personal": labels_df.loc[i]["Security: personal"],
+            "Security: societal": labels_df.loc[i]["Security: societal"],
+            "Tradition": labels_df.loc[i]["Tradition"],
+            "Conformity: rules": labels_df.loc[i]["Conformity: rules"],
+            "Conformity: interpersonal": labels_df.loc[i]["Conformity: interpersonal"],
+            "Humility": labels_df.loc[i]["Humility"],
+            "Benevolence: caring": labels_df.loc[i]["Benevolence: caring"],
+            "Benevolence: dependability": labels_df.loc[i]["Benevolence: dependability"],
+            "Universalism: concern": labels_df.loc[i]["Universalism: concern"],
+            "Universalism: nature": labels_df.loc[i]["Universalism: nature"],
+            "Universalism: tolerance": labels_df.loc[i]["Universalism: tolerance"],
+            "Universalism: objectivity": labels_df.loc[i]["Universalism: objectivity"],
+        }, index=[0])
         augmented_training_df = pd.concat([augmented_training_df, new_argument], ignore_index=True)
+        augmented_labels_df = pd.concat([augmented_labels_df, new_labels], ignore_index=True)
 
         synonym_swapped_premise = better_synonym_swap(premise)
         new_argument = pd.DataFrame({
@@ -150,8 +179,10 @@ def create_augmented_dataset_tsv():
             "Premise": synonym_swapped_premise,
         }, index=[0])
         augmented_training_df = pd.concat([augmented_training_df, new_argument], ignore_index=True)
+        augmented_labels_df = pd.concat([augmented_labels_df, new_labels], ignore_index=True)
     print(augmented_training_df)
     save_data(augmented_training_df)
+    save_labels(augmented_labels_df)
 
 
 original_text = "The quick brown fox jumps over the lazy dog"

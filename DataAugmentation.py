@@ -1,13 +1,15 @@
-import LoadData
-from datasets import Dataset, concatenate_datasets
 import nlpaug.augmenter.word as naw
+import pandas as pd
+import random
+from summa import keywords
+from nltk.corpus import wordnet
 
 # example text augmentation using nlpaug package
 # adapted from usage examples: https://github.com/makcedward/nlpaug/blob/master/example/textual_augmenter.ipynb
 def example(original_text):
     # Replaces random words with synonym
     print("Synonym Replacement")
-    aug = naw.SynonymAug(aug_src='wordnet')
+    aug = naw.SynonymAug(aug_src='wordnet', aug_max=1)
     augmented_text = aug.augment(original_text)
     print("Original:")
     print(original_text)
@@ -17,7 +19,7 @@ def example(original_text):
     ## Augmentation for noising
     # Replaces random words with antonym
     print("Antonym Replacement")
-    aug = naw.AntonymAug()
+    aug = naw.AntonymAug(aug_max=1)
     augmented_text = aug.augment(original_text)
     print("Original:")
     print(original_text)
@@ -26,7 +28,7 @@ def example(original_text):
 
     # Random word swap
     print("Random word swap")
-    aug = naw.RandomWordAug(action="swap")
+    aug = naw.RandomWordAug(action="swap", aug_max=1)
     augmented_text = aug.augment(original_text)
     print("Original:")
     print(original_text)
@@ -35,7 +37,7 @@ def example(original_text):
 
     # Random word addition
     aug = naw.ContextualWordEmbsAug(
-        model_path='bert-base-uncased', action="insert")
+        model_path='bert-base-uncased', action="insert", aug_max=1)
     augmented_text = aug.augment(original_text)
     print("Original:")
     print(original_text)
@@ -44,7 +46,7 @@ def example(original_text):
 
     # Random word deletion
     print("Random word deletion")
-    aug = naw.RandomWordAug()
+    aug = naw.RandomWordAug(aug_max=1)
     augmented_text = aug.augment(original_text)
     print("Original:")
     print(original_text)
@@ -53,99 +55,106 @@ def example(original_text):
 
 def synonym_swap(original_text):
     # Replaces random words with synonym
-    aug = naw.SynonymAug(aug_src='wordnet')
+    aug = naw.SynonymAug(aug_src='wordnet', aug_max=1)
     augmented_text = aug.augment(original_text)
     return augmented_text
 
-
+# The four noising methods
 def antonym_swap(original_text):
     # Replaces random words with antonym
-    aug = naw.AntonymAug()
+    aug = naw.AntonymAug(aug_max=1)
     augmented_text = aug.augment(original_text)
     return augmented_text
 
 def words_swap(original_text):
     # Random word swap
-    aug = naw.RandomWordAug(action="swap")
+    aug = naw.RandomWordAug(action="swap", aug_max=1)
     augmented_text = aug.augment(original_text)
     return augmented_text
 
 def word_addition(original_text):
     # Random word addition
     aug = naw.ContextualWordEmbsAug(
-        model_path='bert-base-uncased', action="insert")
+        model_path='bert-base-uncased', action="insert", aug_max=1)
     augmented_text = aug.augment(original_text)
     return augmented_text
 
 def word_deletion(original_text):
     # Random word deletion
-    aug = naw.RandomWordAug()
+    aug = naw.RandomWordAug(aug_max=1)
     augmented_text = aug.augment(original_text)
     return augmented_text
 
-def gen():
-    dataset_size = int(LoadData.training_dataset.num_rows) -1
-    for i in range(0, dataset_size):
-        premise = LoadData.training_dataset[i]["Premise"]
-        # currently runs once (1 new argument for each argument) can be increased depending on training limits
-        for _ in range(1):
-            augmented_premise = synonym_swap(premise)
-            augmented_premise = " ".join(augmented_premise)
-            yield {"Argument ID": LoadData.training_dataset[i]["Argument ID"],
-                   "Conclusion": LoadData.training_dataset[i]["Conclusion"],
-                   "Stance": LoadData.training_dataset[i]["Stance"],
-                   "Premise": augmented_premise,
-                   "Labels": LoadData.training_dataset[i]["Labels"]}
+# A better synonym swap using keyword extraction
+def better_synonym_swap(original_text):
+    # uses textrank to find keyword
+    TR_keywords = keywords.keywords(original_text, scores=True)
+    # find synonyms of keyword
+    if len(TR_keywords) > 1:
+        synonyms = []
+        for syn in wordnet.synsets(TR_keywords[0][0]):
+            for lm in syn.lemmas():
+                synonyms.append(lm.name())
+        # pick synonym at random and replace keyword with synonym in original text
+        if len(synonyms) < 0:
+            synonym = random.choice(synonyms)
+            synonym = synonym.replace('_', ' ')
+            augmented_text = original_text.replace(TR_keywords[0][0], synonym)
+        else:
+            augmented_text = original_text
+    else: # it doesn't always seem to find a keyword, so in that case choose random word
+        augmented_text = synonym_swap(original_text)
+    return augmented_text
 
 
-# currently takes very long to run
-def gen_noise():
-    dataset_size = int(LoadData.training_dataset.num_rows) -1
-    for i in range(0, dataset_size):
-        premise = LoadData.training_dataset[i]["Premise"]
-        augmented_premise = antonym_swap(premise)
-        augmented_premise = " ".join(augmented_premise)
-        yield {"Argument ID": LoadData.training_dataset[i]["Argument ID"],
-               "Conclusion": LoadData.training_dataset[i]["Conclusion"],
-               "Stance": LoadData.training_dataset[i]["Stance"],
-               "Premise": augmented_premise,
-               "Labels": LoadData.training_dataset[i]["Labels"]}
-        augmented_premise = words_swap(premise)
-        augmented_premise = " ".join(augmented_premise)
-        yield {"Argument ID": LoadData.training_dataset[i]["Argument ID"],
-               "Conclusion": LoadData.training_dataset[i]["Conclusion"],
-               "Stance": LoadData.training_dataset[i]["Stance"],
-               "Premise": augmented_premise,
-               "Labels": LoadData.training_dataset[i]["Labels"]}
-        augmented_premise = word_deletion(premise)
-        augmented_premise = " ".join(augmented_premise)
-        yield {"Argument ID": LoadData.training_dataset[i]["Argument ID"],
-               "Conclusion": LoadData.training_dataset[i]["Conclusion"],
-               "Stance": LoadData.training_dataset[i]["Stance"],
-               "Premise": augmented_premise,
-               "Labels": LoadData.training_dataset[i]["Labels"]}
-        augmented_premise = word_addition(premise)
-        augmented_premise = " ".join(augmented_premise)
-        yield {"Argument ID": LoadData.training_dataset[i]["Argument ID"],
-               "Conclusion": LoadData.training_dataset[i]["Conclusion"],
-               "Stance": LoadData.training_dataset[i]["Stance"],
-               "Premise": augmented_premise,
-               "Labels": LoadData.training_dataset[i]["Labels"]}
+# Adds one of the four sources of noise (addition, deletion, swap or antonym)
+# to the premise at random
+def add_noise_to_premise(premise):
+    i = random.randint(1, 4)
+    if i == 1:
+        new_premise = antonym_swap(premise)
+    elif i == 2:
+        new_premise = words_swap(premise)
+    elif i == 3:
+        new_premise = word_addition(premise)
+    elif i == 4:
+        new_premise = word_deletion(premise)
+    return new_premise
 
 
-
-def create_augmented_dataset():
-    synonym_augmented_data = Dataset.from_generator(gen)
-    print(synonym_augmented_data)
-    print(synonym_augmented_data[0:5])
-    noised_data = Dataset.from_generator(gen_noise)
-    print(noised_data)
-    print(noised_data[0:5])
-    complete_data = concatenate_datasets([LoadData.training_dataset, synonym_augmented_data, noised_data])
-    return complete_data
+def save_data(dataset):
+    dataset.to_csv('data/augmented-arguments-training.tsv', sep="\t", index=False)
 
 
-#original_text = "The quick brown fox jumps over the lazy dog"
-#example(original_text)
+def create_augmented_dataset_tsv():
+    training_df = pd.read_csv('data/arguments-training.tsv', sep='\t')
+    augmented_training_df = pd.DataFrame.copy(training_df)
 
-augmented_dataset = create_augmented_dataset()
+    for i in range(0, len(training_df)):
+    # for i in range(0, 5):
+        premise = training_df.loc[i]['Premise']
+        noised_premise = add_noise_to_premise(premise)
+        new_argument = pd.DataFrame({
+            "Argument ID": training_df.loc[i]["Argument ID"],
+            "Conclusion": training_df.loc[i]["Conclusion"],
+            "Stance": training_df.loc[i]["Stance"],
+            "Premise": noised_premise,
+        })
+        augmented_training_df = pd.concat([augmented_training_df, new_argument], ignore_index=True)
+
+        synonym_swapped_premise = better_synonym_swap(premise)
+        new_argument = pd.DataFrame({
+            "Argument ID": training_df.loc[i]["Argument ID"],
+            "Conclusion": training_df.loc[i]["Conclusion"],
+            "Stance": training_df.loc[i]["Stance"],
+            "Premise": synonym_swapped_premise,
+        }, index=[0])
+        augmented_training_df = pd.concat([augmented_training_df, new_argument], ignore_index=True)
+    print(augmented_training_df)
+    save_data(augmented_training_df)
+
+
+original_text = "The quick brown fox jumps over the lazy dog"
+# better_synonym_swap(original_text)
+
+create_augmented_dataset_tsv()

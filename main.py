@@ -76,7 +76,7 @@ if __name__ == '__main__':
         if GRID_SEARCH:
             # Feed tensors into DeBERTa and perform training through grid-search:
             hyperparams = {
-                'lr': [5e-3, 5e-6, 5e-8],
+                'lr': [5e-5, 5e-6, 5e-7],
                 'patience': [3, 4, 10]
             }
             detailed_train_loss_list, train_loss_list, val_loss_list, _ = init_grid_search(hyperparams)

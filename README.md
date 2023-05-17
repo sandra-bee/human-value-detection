@@ -54,18 +54,19 @@ The `\result_metrics` folder contains lists of F1 scores and loss values that ar
 The batch size during model training is set at 16, as this is the max size that didn't run out of memory on the test computer.
 
 ## Optimal Hyperparameters
-After running grid search while varying the hyperparameters `learning rate` and `patience`, we obtained the f1 scores (averaged over 3 runs) reported in the table below:
+After running grid search while varying the hyperparameters `learning rate` and `patience`, we obtained the f1 scores (averaged over 3 runs) reported in the table below to 3 significant figures:
 
-| Patience\Learning rate | __3__  | __5__ | __10__   | 
-|------------------------|--------|-------|----------|
-| __5e-3__               |  |       |    
-| __5e-6__               |  |       |  
-| __5e-8__               |  |       | 
+| Patience\Learning rate | __3__                  | __4__ | __10__   | 
+|------------------------|------------------------|-------|----------|
+| __5e-5__               | _training in progress_ |  _training in progress_     |    _training in progress_
+| __5e-6__               | 0.484                  | 0.490 | 0.510 
+| __5e-7__               |    _training in progress_                    |  _training in progress_     | _training in progress_
 
 # TODO:
-* Put data after augmentation into a dataframe
-* Visualise results with confusion matrix(?)
 * Average results of 3 runs with grid search and add to optimal hyperparm table
+* Run data augmentation to get augmented data back
+* Visualise results with confusion matrix(?)
+
 
 # References
 

@@ -10,7 +10,7 @@ def make_predictions(loaded_data, mode, model):
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     if mode == 'test':
-        model = torch.load("best_model.pt")  # Load the best model obtained during testing
+        model = torch.load("models/best_model.pt")  # Load the best model obtained during training
     model.eval()
 
     # Launch model testing:
@@ -94,9 +94,9 @@ def launch_model_training(loaded_train_data, loaded_val_data, learning_rate, pat
         # Early stopping:
         if epoch > 0 and val_loss_curr_epoch > val_loss_prev_epoch:
             # Patience is the number of times val loss can be larger than in previous run
-            patience -= 1
             if patience == 0:
                 break  # Stop early
+            patience -= 1
         val_loss_prev_epoch = val_loss_curr_epoch
 
         # Save best model config:

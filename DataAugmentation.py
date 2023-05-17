@@ -1,6 +1,7 @@
 import nlpaug.augmenter.word as naw
 import pandas as pd
 import random
+import nltk
 from summa import keywords
 from nltk.corpus import wordnet
 
@@ -184,7 +185,7 @@ def create_augmented_dataset_tsv():
     save_data(augmented_training_df)
     save_labels(augmented_labels_df)
 
-
+nltk.download('wordnet')
 original_text = "The quick brown fox jumps over the lazy dog"
 # better_synonym_swap(original_text)
 

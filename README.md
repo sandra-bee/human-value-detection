@@ -56,11 +56,11 @@ The batch size during model training is set at 16, as this is the max size that 
 ## Optimal Hyperparameters
 After running grid search while varying the hyperparameters `learning rate` and `patience`, we obtained the f1 scores (averaged over 3 runs) reported in the table below to 3 significant figures:
 
-| Patience\Learning rate | __3__                  | __4__ | __10__   | 
-|------------------------|------------------------|-------|----------|
-| __5e-5__               | _training in progress_ |  _training in progress_     |    _training in progress_
-| __5e-6__               | 0.484                  | 0.490 | 0.510 
-| __5e-7__               |    _training in progress_                    |  _training in progress_     | _training in progress_
+| Patience\Learning rate | __3__ | __4__                  | __10__   | 
+|------------------------|-------|------------------------|----------|
+| __5e-5__               | 0.496 | 0.509                  |    0.515
+| __5e-6__               | 0.484 | 0.490                  | 0.510 
+| __5e-7__               | 0.408 |0.401 | 0.411
 
 # TODO:
 * Average results of 3 runs with grid search and add to optimal hyperparm table

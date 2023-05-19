@@ -15,6 +15,13 @@ This project expects the following files in a `data` folder (not included in thi
 Install the requirements in `requirements.txt`, then run `main.py <train|test>` to launch. The parameter `train` will launch either grid search (if `GRID_SEARCH=True` in main) or will perform training with a set of optimal
 hyperparameter values chosen. The parameter `test` will perform testing using the `best_model.pt` that is saved in folder `models\` after training.
 
+## Data Augmentation
+To run data augmentation on the files in `\data`, run the file `DataAugmentation.py`. This will generate the following augmented training data files:
+* augmented-arguments-training.tsv
+* augmented-labels-training.tsv
+
+You can then train the model using the augmented training data by setting the flag `USE_DATA_AUG` in main to true.
+
 # Directory Structure
 This project is structured as follows:
 ```bash
@@ -47,7 +54,6 @@ The `\models` folder contains the .pt PyTorch models that are generated after fi
 The `\plots` folder contains the loss curves generated during training and validation. These plots are generated in `visualisation.py`.
 
 The `\result_metrics` folder contains lists of F1 scores and loss values that are generated to make plots. E.g. the list of training losses per epoch are stored such that they can be plotted later. These lists are stored in `store_metrics.py`.
-
 
 # Design Decisions
 ## Batch size

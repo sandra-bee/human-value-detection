@@ -55,7 +55,7 @@ def launch_model_training(loaded_train_data, loaded_val_data, learning_rate, pat
 
     # Set learning rate very low, the model is already pretrained:
     optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate)
-    max_epochs = 50
+    max_epochs = 1000
     best_f1 = 0
     train_loss_list = []
     detailed_train_loss_list = []

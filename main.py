@@ -6,9 +6,9 @@ from visualisation import make_loss_graph
 from store_metrics import store_list
 import sys
 
-MAKE_PLOTS = False
-GRID_SEARCH = True
-
+MAKE_PLOTS = True
+GRID_SEARCH = False
+USE_DATA_AUG = True
 
 # Launch training on specified hyperparameter values:
 def init_training(lr, patience):
@@ -60,11 +60,15 @@ if __name__ == '__main__':
     torch.set_default_device('cuda')  # Use GPU by default
 
     # Read in all datasets:
-    train_x_set = pd.read_csv("data/arguments-training.tsv", sep="\t")
+    if USE_DATA_AUG:
+        train_x_set = pd.read_csv("data/augmented-arguments-training.tsv", sep="\t")
+        train_y_set = pd.read_csv("data/augmented-labels-training.tsv", sep="\t")
+    else:
+        train_x_set = pd.read_csv("data/arguments-training.tsv", sep="\t")
+        train_y_set = pd.read_csv("data/labels-training.tsv", sep="\t")
+    val_y_set = pd.read_csv("data/labels-validation.tsv", sep="\t")
     val_x_set = pd.read_csv("data/arguments-validation.tsv", sep="\t")
     test_x_set = pd.read_csv("data/arguments-test.tsv", sep="\t")
-    train_y_set = pd.read_csv("data/labels-training.tsv", sep="\t")
-    val_y_set = pd.read_csv("data/labels-validation.tsv", sep="\t")
     test_y_set = pd.read_csv("data/labels-test.tsv", sep="\t")
 
     # Convert data to loaded tensors:
@@ -83,7 +87,7 @@ if __name__ == '__main__':
 
         else:
             # Feed tensors into DeBERTa and perform training on optimal hyperparameter values:
-            detailed_train_loss_list, train_loss_list, val_loss_list, _ = init_training(lr=5e-6, patience=10)
+            detailed_train_loss_list, train_loss_list, val_loss_list, _ = init_training(lr=5e-5, patience=10)
             # Print graphs on the loss:
             if MAKE_PLOTS:
                 make_loss_graph(detailed_train_loss_list, "Training", detailed=True)

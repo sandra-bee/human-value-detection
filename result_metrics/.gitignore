@@ -1,2 +1,5 @@
 *
 !.gitignore
+!best_model_detailed_train_lr5e-05_ptn11_loss
+!best_model_train_val_lr5e-05_ptn11_loss
+!best_model_val_lr5e-05_ptn11_f1

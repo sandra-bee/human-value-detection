@@ -13,7 +13,7 @@ This project expects the following files in a `data` folder (not included in thi
 * labels-test.tsv
 
 Install the requirements in `requirements.txt`, then run `main.py <train|test>` to launch. The parameter `train` will launch either grid search (if `GRID_SEARCH=True` in main) or will perform training with a set of optimal
-hyperparameter values chosen. The parameter `test` will perform testing using the `best_model.pt` that is saved in folder `models\` after training.
+hyperparameter values chosen. The parameter `test` will perform testing using the `best_model.pt` that has been saved in folder `models\` after training. You can set `MAKE_PLOTS=True` in main to visualise the training and validation loss obtained on the best model.
 
 ## Data Augmentation
 To run data augmentation on the files in `\data`, run the file `DataAugmentation.py`. This will generate the following augmented training data files:
@@ -30,13 +30,13 @@ human-value-detection
 │   │   ├── arguments-training.tsv
 │   │   └── ...
 │   ├──models
-│   │   ├── best_model_lr0.005_ptn3.pt
+│   │   ├── best_model.pt
 │   │   └── ...
 │   ├──plots
-│   │   ├── Training.png
+│   │   ├── Training and validation.png
 │   │   └── ...
 │   ├──result_metrics
-│   │   ├── train_val_lr0.005_ptn3_loss
+│   │   ├── best_model_train_val_lr5e-05_ptn11_loss
 │   │   └── ...
 ├── data_preprocessing.py
 ├── model_making.py
@@ -80,11 +80,6 @@ After running grid search while varying the hyperparameters `learning rate` and 
 | __5e-7__               | 0.418   (±0.0110)  | 0.417  (±0.0184) | 0.427  (±0.00700) | 0.450 (±0.0105)         | x               |
 
 Learning rates larger than 5e-4 gave F1 scores 0 on the validation set so were not explored further as the learning process was too jumpy.
-
-# TODO:
-* Explore boundaries of hyperparms
-* Visualise results with confusion matrix(?)
-
 
 # References
 

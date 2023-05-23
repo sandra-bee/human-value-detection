@@ -43,6 +43,7 @@ def make_predictions(loaded_data, mode, model):
 
 
 def launch_model_training(loaded_train_data, loaded_val_data, learning_rate, patience):
+    init_patience = patience
 
     loss_function = torch.nn.BCEWithLogitsLoss()
 
@@ -95,13 +96,14 @@ def launch_model_training(loaded_train_data, loaded_val_data, learning_rate, pat
         if epoch > 0 and val_loss_curr_epoch > val_loss_prev_epoch:
             # Patience is the number of times val loss can be larger than in previous run
             if patience == 0:
+                print(f"***Early stopping at: {epoch}/{max_epochs}***")
                 break  # Stop early
             patience -= 1
         val_loss_prev_epoch = val_loss_curr_epoch
 
         # Save best model config:
         if val_f1_curr_epoch > best_f1:
-            torch.save(model, f'models/best_model_lr{learning_rate}_ptn{patience}.pt')  # Save whole model
+            torch.save(model, f'models/best_model_lr{learning_rate}_ptn{init_patience}.pt')  # Save whole model
             best_f1 = val_f1_curr_epoch
 
         train_loss_list.append(train_loss_curr_epoch)

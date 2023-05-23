@@ -8,7 +8,8 @@ import sys
 
 MAKE_PLOTS = True
 GRID_SEARCH = False
-USE_DATA_AUG = True
+USE_DATA_AUG = False
+
 
 # Launch training on specified hyperparameter values:
 def init_training(lr, patience):
@@ -31,8 +32,8 @@ def init_training(lr, patience):
 
 # Grid search across the learning rates and patience values:
 def init_grid_search(hyperparams_dict):
-    for i in range(3):
-        for j in range(3):
+    for i in range(len(hyperparams['lr'])):
+        for j in range(len(hyperparams['patience'])):
             detailed_train_loss, train_loss, val_loss, val_f1 = \
                 launch_model_training(loaded_torch_train_data, loaded_torch_val_data,
                                       learning_rate=hyperparams_dict['lr'][i], patience=hyperparams_dict['patience'][j])
@@ -81,13 +82,13 @@ if __name__ == '__main__':
             # Feed tensors into DeBERTa and perform training through grid-search:
             hyperparams = {
                 'lr': [5e-5, 5e-6, 5e-7],
-                'patience': [3, 4, 10]
+                'patience': [11]
             }
             detailed_train_loss_list, train_loss_list, val_loss_list, _ = init_grid_search(hyperparams)
 
         else:
             # Feed tensors into DeBERTa and perform training on optimal hyperparameter values:
-            detailed_train_loss_list, train_loss_list, val_loss_list, _ = init_training(lr=5e-5, patience=10)
+            detailed_train_loss_list, train_loss_list, val_loss_list, _ = init_training(lr=5e-5, patience=12)
             # Print graphs on the loss:
             if MAKE_PLOTS:
                 make_loss_graph(detailed_train_loss_list, "Training", detailed=True)

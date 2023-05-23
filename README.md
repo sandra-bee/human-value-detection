@@ -20,7 +20,7 @@ To run data augmentation on the files in `\data`, run the file `DataAugmentation
 * augmented-arguments-training.tsv
 * augmented-labels-training.tsv
 
-You can then train the model using the augmented training data by setting the flag `USE_DATA_AUG` in main to true.
+You can then train the model using the augmented training data by setting the flag `USE_DATA_AUG=True` in main.
 
 # Directory Structure
 This project is structured as follows:
@@ -59,18 +59,30 @@ The `\result_metrics` folder contains lists of F1 scores and loss values that ar
 ## Batch size
 The batch size during model training is set at 16, as this is the max size that didn't run out of memory on the test computer.
 
-## Optimal Hyperparameters
-After running grid search while varying the hyperparameters `learning rate` and `patience`, we obtained the f1 scores (averaged over 3 runs) reported in the table below to 3 significant figures:
+## Data Augmentation
 
-| Patience\Learning rate | __3__ | __4__                  | __10__   | 
-|------------------------|-------|------------------------|----------|
-| __5e-5__               | 0.496 | 0.509                  |    0.515
-| __5e-6__               | 0.484 | 0.490                  | 0.510 
-| __5e-7__               | 0.408 |0.401 | 0.411
+Training the models 3 times with learning rate 5e-5 and patience 10 and averaging the F1 scores, we obtained the following mean and standard deviations to 3 significant figures:
+
+| With data augmentation | Without data augmentation |
+|------------------------|---------------------------|
+| 0.512 (±0.0128)        | 0.515 (±0.0161)           | 
+
+Performing a paired t-test results in a p-value of: 0.910.
+As this difference is insignificant, we design the training of the final model without data augmentation. 
+
+## Optimal Hyperparameters
+After running grid search while varying the hyperparameters `learning rate` and `patience`, we obtained the mean F1 scores (averaged over 3 runs) with standard deviations reported in the table below to 3 significant figures:
+
+| Patience\Learning rate | __3__              | __4__            | __10__            | __11__           | __12__          |
+|------------------------|--------------------|------------------|-------------------|------------------|-----------------|
+| __5e-5__               | 0.496 (±0.0126)    | 0.509 (±0.0126)  | 0.515 (±0.0161)   | 0.522 (±0.0132)  | 0.502 (±0.0157) |
+| __5e-6__               | 0.483   (±0.00676) | 0.491  (±0.0143) | 0.489   (±0.0113) | 0.502 (±0.00685) | x               |
+| __5e-7__               | 0.418   (±0.0110)  | 0.417  (±0.0184) | 0.427  (±0.00700) | 0.450 (±0.0105)         | x               |
+
+Learning rates larger than 5e-4 gave F1 scores 0 on the validation set so were not explored further as the learning process was too jumpy.
 
 # TODO:
-* Average results of 3 runs with grid search and add to optimal hyperparm table
-* Run data augmentation to get augmented data back
+* Explore boundaries of hyperparms
 * Visualise results with confusion matrix(?)
 
 

@@ -1,3 +1,4 @@
+import ast
 import pandas as pd
 import torch
 from data_preprocessing import read_data
@@ -95,7 +96,12 @@ if __name__ == '__main__':
                 make_loss_graph([train_loss_list, val_loss_list], "Training and validation", detailed=False)
                 make_loss_graph(train_loss_list, "Testing", detailed=False)
     elif run_mode == 'test':
-        # Perform testing:
+        # Perform testing on best model:
+        if MAKE_PLOTS:
+            loss_file = open('result_metrics/best_model_train_val_lr5e-05_ptn11_loss', 'r')
+            best_model_loss = ast.literal_eval(loss_file.read())
+            make_loss_graph(best_model_loss, "Training and validation", detailed=False)
+
         test_f1, _ = make_predictions(loaded_data=loaded_torch_test_data, mode='test', model=None)
         print(f"Results on testset: {test_f1}")
     else:

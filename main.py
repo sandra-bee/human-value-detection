@@ -29,20 +29,6 @@ def init_training(lr, patience):
 
     return detailed_train_loss, train_loss, val_loss, val_f1
 
-# Launch final training on specified hyperparameter values:
-def init_final_training(lr, patience):
-    detailed_train_val_loss, train_val_loss = \
-        launch_model_final_training(torch.cat((loaded_torch_train_data, loaded_torch_val_data)),
-                                    learning_rate=lr, patience=patience)
-
-    # Save data on the losses
-    store_list(train_val_loss, "loss",
-               f"final_train_val_lr{lr}_ptn{patience}")
-    store_list(detailed_train_val_loss, "loss",
-               f"final_detailed_train_lr{lr}_ptn{patience}")
-
-    return detailed_train_val_loss, train_val_loss
-
 
 # Grid search across the learning rates and patience values:
 def init_grid_search(hyperparams_dict):
@@ -108,15 +94,9 @@ if __name__ == '__main__':
                 make_loss_graph(detailed_train_loss_list, "Training", detailed=True)
                 make_loss_graph([train_loss_list, val_loss_list], "Training and validation", detailed=False)
                 make_loss_graph(train_loss_list, "Testing", detailed=False)
-    elif run_mode == 'final_train':
-        detailed_train_val_loss_list, train_val_loss_list = init_final_training(lr=5e-5, patience=12)
-    # Print graphs on the loss:
-        if MAKE_PLOTS:
-            make_loss_graph(detailed_train_val_loss_list, "Training", detailed=True)
-            make_loss_graph(train_val_loss_list, "Training", detailed=False)
     elif run_mode == 'test':
         # Perform testing:
         test_f1, _ = make_predictions(loaded_data=loaded_torch_test_data, mode='test', model=None)
         print(f"Results on testset: {test_f1}")
     else:
-        print("Please run this script as: python3 main.py <train|final_train|test>")
+        print("Please run this script as: python3 main.py <train|test>")

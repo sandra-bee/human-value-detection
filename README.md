@@ -82,7 +82,7 @@ After running grid search while varying the hyperparameters `learning rate` and 
 Learning rates larger than 5e-4 gave F1 scores 0 on the validation set so were not explored further as the learning process was too jumpy.
 
 # Results
-The best model uses a learning rate of 5e-5 and a value of 11 for patience. On the test set, this model gives an F1 score of 0.548. Below are the results per value:
+The best model uses a learning rate of 5e-5 and a value of 11 for patience. On the test set, this model gives an F1 score of __0.548__. Below are the results per value:
 
 | __Value__                     | __Precision__ | __Recall__ | __F1-score__ | __Number of instances in test set__ |
 |-------------------------------|---------------|------------|--------------|-------------------------------------|

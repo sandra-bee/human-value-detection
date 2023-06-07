@@ -61,7 +61,7 @@ The batch size during model training is set at 16, as this is the max size that 
 
 ## Data Augmentation
 
-Training the models 3 times with learning rate 5e-5 and patience 10 and averaging the F1 scores, we obtained the following mean and standard deviations to 3 significant figures:
+Training the models 3 times with learning rate 5e-5 and patience 10 and samples averaging the F1 scores, we obtained the following mean and standard deviations to 3 significant figures:
 
 | With data augmentation | Without data augmentation |
 |------------------------|---------------------------|
@@ -71,7 +71,7 @@ Performing a paired t-test results in a p-value of: 0.910.
 As this difference is insignificant, we design the training of the final model without data augmentation. 
 
 ## Optimal Hyperparameters
-After running grid search while varying the hyperparameters `learning rate` and `patience`, we obtained the mean F1 scores (averaged over 3 runs) with standard deviations reported in the table below to 3 significant figures:
+After running grid search while varying the hyperparameters `learning rate` and `patience`, we obtained the samples average F1 scores (averaged over 3 runs) with standard deviations reported in the table below to 3 significant figures:
 
 | Patience\Learning rate | __3__              | __4__            | __10__            | __11__           | __12__          |
 |------------------------|--------------------|------------------|-------------------|------------------|-----------------|
@@ -82,7 +82,7 @@ After running grid search while varying the hyperparameters `learning rate` and 
 Learning rates larger than 5e-4 gave F1 scores 0 on the validation set so were not explored further as the learning process was too jumpy.
 
 # Results
-The best model uses a learning rate of 5e-5 and a value of 11 for patience. On the test set, this model gives an F1 score of __0.548__. Below are the results per value:
+The best model uses a learning rate of 5e-5 and a value of 11 for patience. On the test set, this model gives a samples average F1 score of __0.548__. Below are the results per value:
 
 | __Value__                     | __Precision__ | __Recall__ | __F1-score__ | __Number of instances in test set__ |
 |-------------------------------|---------------|------------|--------------|-------------------------------------|
@@ -111,7 +111,7 @@ The best model uses a learning rate of 5e-5 and a value of 11 for patience. On t
 | __Weighted average__          |      0.56	    |    0.53    |	   0.52     |               	                    |
 | __Samples average__           |      0.59	    |    0.59    |	   0.55     |               	                    |
 
-There seems to be a strong correlation between the number of training instances per value and the F1 score of those values. We calculated this from the Spearson Correlation Coefficient, which is is 0.712.
+There seems to be a strong correlation between the number of training instances per value and the F1 score of those values. We calculated this from the Spearson Correlation Coefficient, which is is 0.712 (p < 0.001).
 
 # References
 

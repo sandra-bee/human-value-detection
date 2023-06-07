@@ -3,19 +3,25 @@ from sklearn import metrics
 import numpy as np
 import torch
 
-
 def make_predictions(loaded_data, mode, model):
     # Use sigmoid with binary cross-entropy loss as we have a multi-label classification problem:
     loss_function = torch.nn.BCEWithLogitsLoss()
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     if mode == 'test':
-        model = torch.load("models/best_model.pt")  # Load the best model obtained during training
+        model = torch.load("models/best_model.pt", map_location=torch.device('cpu'))  # Load the best model obtained during training
     model.eval()
 
     # Launch model testing:
     f1 = []
+    precision = []
+    recall = []
     loss = []
+    accuracy = []
+
+    all_preds = []
+    all_labels = []
+
     with torch.no_grad():
         for batch in loaded_data:
             input_ids_batch, input_mask_batch, labels_batch = batch
@@ -24,6 +30,7 @@ def make_predictions(loaded_data, mode, model):
                                 attention_mask=input_mask_batch, labels=labels_batch)
 
             label_ids = labels_batch.cpu().numpy()
+            all_labels.extend(label_ids)
             # Compute loss:
             loss_tensor = loss_function(eval_output.logits, labels_batch.to(device))
             loss.append(loss_tensor.item())
@@ -33,12 +40,28 @@ def make_predictions(loaded_data, mode, model):
             preds = np.zeros(probs.shape)
             preds[np.where(probs >= 0.5)] = 1
 
+            all_preds.extend(preds)
+
             # Calculate f1 over all samples:
             curr_f1 = metrics.f1_score(label_ids, preds, average='samples')
+            curr_precision = metrics.precision_score(label_ids, preds, average='samples')
+            curr_recall = metrics.recall_score(label_ids, preds, average='samples')
+            curr_accuracy = metrics.accuracy_score(label_ids, preds)
             f1.append(curr_f1)
-
+            precision.append(curr_precision)
+            recall.append(curr_recall)
+            accuracy.append(curr_accuracy)
     mean_loss = sum(loss) / len(loss)
     mean_f1 = sum(f1) / len(f1)
+    mean_recall = sum(recall) / len(recall)
+    mean_precision = sum(precision) / len(precision)
+    mean_accuracy = sum(accuracy) / len(accuracy)
+    print("mean recall: " + str(mean_recall))
+    print("mean precision: " + str(mean_precision))
+    print("mean accuracy: " + str(mean_accuracy))
+
+    print(metrics.classification_report(all_labels, all_preds))
+
     return mean_f1, mean_loss
 
 

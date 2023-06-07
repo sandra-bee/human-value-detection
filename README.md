@@ -61,7 +61,7 @@ The batch size during model training is set at 16, as this is the max size that 
 
 ## Data Augmentation
 
-Training the models 3 times with learning rate 5e-5 and patience 10 and averaging the F1 scores, we obtained the following mean and standard deviations to 3 significant figures:
+Training the models 3 times with learning rate 5e-5 and patience 10 and samples averaging the F1 scores, we obtained the following mean and standard deviations to 3 significant figures:
 
 | With data augmentation | Without data augmentation |
 |------------------------|---------------------------|
@@ -71,7 +71,7 @@ Performing a paired t-test results in a p-value of: 0.910.
 As this difference is insignificant, we design the training of the final model without data augmentation. 
 
 ## Optimal Hyperparameters
-After running grid search while varying the hyperparameters `learning rate` and `patience`, we obtained the mean F1 scores (averaged over 3 runs) with standard deviations reported in the table below to 3 significant figures:
+After running grid search while varying the hyperparameters `learning rate` and `patience`, we obtained the samples average F1 scores (averaged over 3 runs) with standard deviations reported in the table below to 3 significant figures:
 
 | Patience\Learning rate | __3__              | __4__            | __10__            | __11__           | __12__          |
 |------------------------|--------------------|------------------|-------------------|------------------|-----------------|
@@ -80,6 +80,38 @@ After running grid search while varying the hyperparameters `learning rate` and 
 | __5e-7__               | 0.418   (±0.0110)  | 0.417  (±0.0184) | 0.427  (±0.00700) | 0.450 (±0.0105)         | x               |
 
 Learning rates larger than 5e-4 gave F1 scores 0 on the validation set so were not explored further as the learning process was too jumpy.
+
+# Results
+The best model uses a learning rate of 5e-5 and a value of 11 for patience. On the test set, this model gives a samples average F1 score of __0.548__. Below are the results per value:
+
+| __Value__                     | __Precision__ | __Recall__ | __F1-score__ | __Number of instances in test set__ |
+|-------------------------------|---------------|------------|--------------|-------------------------------------|
+| __Self-direction: thought__   | 	   0.52	    |    0.38    |     0.44     |	                143                 |
+| __Self direction: action__    |      0.76	    |    0.44    |	   0.56     |	                391                 |
+| __Stimulation__               |      0.25	    |    0.04    |	   0.07     |	                77                  |
+| __Hedonism__                  |      0.56	    |    0.19 	 |     0.29     |               	26                  |
+| __Achievement__               |      0.58	    |    0.61    |     0.6      |                	412                 | 
+| __Power: dominance__          |      0.71	    |    0.09    |	   0.16     |               	108                 |
+| __Power: resources__          |      0.38	    |    0.51    |     0.43     |                 105                 |
+| __Face__                      |      0.26	    |    0.2     |   	 0.22	    |                 96                  |    
+| __Security: personal__        |      0.7	    |    0.73    |     0.72	    |                 537                 |
+| __Security: societal__        |      0.51	    |    0.74	   |     0.6	    |                 397                 |
+| __Tradition__                 |      0.52	    |    0.55	   |     0.54	    |                 168                 |
+| __Conformity: rules__         |    	 0.39	    |    0.75    |	   0.51	    |                 287                 |
+| __Conformity: interpersonal__ |      0.5	    |    0.21    |	   0.29     |                	53                  |
+| __Humility__                  |      0.19	    |    0.11    |	   0.14     |               	74                  |
+| __Benevolence: caring__       |      0.59	    |    0.33    |	   0.43     |               	336                 |
+| __Benevolence: dependibility__|      0.27	    |    0.45    |	   0.34     |                	163                 |
+| __Universalism: concern__     |      0.65	    |    0.77    |	   0.7      |                	588                 |
+| __Universalism: nature__      |      0.74	    |    0.83    |	   0.78	    |                 144                 |
+| __Universalism: tolerance__   |      0.44	    |    0.31    |	   0.36     |               	195                 |
+| __Universalism: objectivity__ |      0.55	    |    0.33    |	   0.41     |               	471                 |
+| __Micro average__             |      0.55   	|    0.53    |	   0.54     |	                                    |
+| __Macro average__             |      0.5	    |    0.43    |	   0.43     |               	                    |
+| __Weighted average__          |      0.56	    |    0.53    |	   0.52     |               	                    |
+| __Samples average__           |      0.59	    |    0.59    |	   0.55     |               	                    |
+
+There seems to be a strong correlation between the number of training instances per value and the F1 score of those values. We calculated this from the Spearson Correlation Coefficient, which is is 0.712 (p < 0.001).
 
 # References
 

@@ -12,8 +12,8 @@ This project expects the following files in a `data` folder (not included in thi
 * labels-validation.tsv
 * labels-test.tsv
 
-Install the requirements in `requirements.txt`, then run `main.py <train|test>` to launch. The parameter `train` will launch either grid search (if `GRID_SEARCH=True` in main) or will perform training with a set of optimal
-hyperparameter values chosen. The parameter `test` will perform testing using the `best_model.pt` that has been saved in folder `models\` after training. You can set `MAKE_PLOTS=True` in main to visualise the training and validation loss obtained on the best model.
+Install the requirements in `requirements.txt`, then run `main.py <train|test|extra_test>` to launch. The parameter `train` will launch either grid search (if `GRID_SEARCH=True` in main) or will perform training with a set of optimal
+hyperparameter values chosen. The parameter `test` will perform testing using the `best_model.pt` that has been saved in folder `models\` after training. The parameter `extra_test` will also perform testing, but for the additional test datasets provided for robustness (Nahj, Zhihu, NYT). You can set `MAKE_PLOTS=True` in main to visualise the training and validation loss obtained on the best model.
 
 ## Data Augmentation
 To run data augmentation on the files in `\data`, run the file `DataAugmentation.py`. This will generate the following augmented training data files:

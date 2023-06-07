@@ -53,7 +53,7 @@ def init_grid_search(hyperparams_dict):
 
 
 if __name__ == '__main__':
-    # This script is run by specifying 'python3 main.py <train|test>:
+    # This script is run by specifying 'python3 main.py <train|test|extra_test>:
     if len(sys.argv) < 1:
         print("Please run this script as: python3 main.py <train|test|extra_test>")
     else:
@@ -68,10 +68,12 @@ if __name__ == '__main__':
     else:
         train_x_set = pd.read_csv("data/arguments-training.tsv", sep="\t")
         train_y_set = pd.read_csv("data/labels-training.tsv", sep="\t")
+
     val_y_set = pd.read_csv("data/labels-validation.tsv", sep="\t")
     val_x_set = pd.read_csv("data/arguments-validation.tsv", sep="\t")
     test_x_set = pd.read_csv("data/arguments-test.tsv", sep="\t")
     test_y_set = pd.read_csv("data/labels-test.tsv", sep="\t")
+
     test_x_nahj_set = pd.read_csv("data/arguments-test-nahjalbalagha.tsv", sep="\t")
     test_y_nahj_set = pd.read_csv("data/labels-test-nahjalbalagha.tsv", sep="\t")
     test_x_zhihu = pd.read_csv("data/arguments-validation-zhihu.tsv", sep="\t")
@@ -121,4 +123,4 @@ if __name__ == '__main__':
         test_nyt_f1, _ = make_predictions(loaded_data=loaded_torch_nyt_data, mode='test', model=None)
         print(f"Results on nyt testset: {test_nyt_f1}")
     else:
-        print("Please run this script as: python3 main.py <train|test>")
+        print("Please run this script as: python3 main.py <train|test|extra_test>")

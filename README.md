@@ -24,8 +24,14 @@ The following 2 additional datasets below should also be in the `data/` folder a
 For testing, this project expectes `models/best_model.pt` to be present. You can obtain this file through training, or download it from [[3]](#3) (you will have access to this link with your RuG gmail account).
 
 ## Launch
-Install the requirements in `requirements.txt`, then run `main.py <train|test|extra_test>` to launch. The parameter `train` will launch either grid search (if `GRID_SEARCH=True` in main) or will perform training with a set of optimal
-hyperparameter values chosen. The parameter `test` will perform testing using the `best_model.pt` that has been saved in folder `models/` after training. The parameter `extra_test` will also perform testing, but for the additional test datasets provided for robustness (Nahj, Zhihu, NYT). You can set `MAKE_PLOTS=True` in main to visualise the training and validation loss obtained on the best model.
+Install the requirements in `requirements.txt` using `pip install -r requirements.txt` in your terminal (we recommend 
+setting up a virtual environment). 
+
+Then run `main.py <train|test|extra_test>` to launch:
+* The parameter `train` will launch either grid search (if `GRID_SEARCH=True` in main) or will perform training with a set of optimal
+hyperparameter values chosen. 
+* The parameter `test` will perform testing using the `best_model.pt` that has been saved in folder `models/` after training. 
+* The parameter `extra_test` will also perform testing, but for the additional test datasets provided for robustness (Nahj, Zhihu, NYT). You can set `MAKE_PLOTS=True` in main to visualise the training and validation loss obtained on the best model.
 
 ## Data Augmentation
 To run data augmentation on the files in `data/`, run the file `DataAugmentation.py`. This will generate the following augmented training data files:

@@ -9,7 +9,7 @@ def make_predictions(loaded_data, mode, model):
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     if mode == 'test':
-        model = torch.load("models/best_model.pt", map_location=torch.device('cpu'))  # Load the best model obtained during training
+        model = torch.load("models/best_model.pt")  # Load the best model obtained during training
     model.eval()
 
     # Launch model testing:

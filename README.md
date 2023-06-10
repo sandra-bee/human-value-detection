@@ -21,20 +21,26 @@ The following 2 additional datasets below should also be in the `data/` folder a
 * arguments-test-nyt.tsv
 * labels-test-nyt.tsv
 
-For testing, this project expectes `models/best_model.pt` to be present. You can obtain this file through training, or download it from [[3]](#3) (you will have access to this link with your RuG gmail account).
+For testing, this project expectes `models/best_model.pt` to be present. You can obtain this file through training, or 
+download it from [[3]](#3) (you will have access to this link with your RuG gmail account).
 
 ## Launch
 Install the requirements in `requirements.txt` using `pip install -r requirements.txt` in your terminal (we recommend 
 setting up a virtual environment). 
 
+In order to install pytorch, follow the installation instructions found here: https://pytorch.org/get-started/locally/. 
+Be sure to have your virtual environment active, if you use one.
+
 Then run `main.py <train|test|extra_test>` to launch:
-* The parameter `train` will launch either grid search (if `GRID_SEARCH=True` in main) or will perform training with a set of optimal
-hyperparameter values chosen. 
+* The parameter `train` will launch either grid search (if `GRID_SEARCH=True` in main) or will perform training with a set 
+of optimal hyperparameter values chosen. 
 * The parameter `test` will perform testing using the `best_model.pt` that has been saved in folder `models/` after training. 
-* The parameter `extra_test` will also perform testing, but for the additional test datasets provided for robustness (Nahj, Zhihu, NYT). You can set `MAKE_PLOTS=True` in main to visualise the training and validation loss obtained on the best model.
+* The parameter `extra_test` will also perform testing, but for the additional test datasets provided for robustness (Nahj, 
+Zhihu, NYT). You can set `MAKE_PLOTS=True` in main to visualise the training and validation loss obtained on the best model.
 
 ## Data Augmentation
-To run data augmentation on the files in `data/`, run the file `DataAugmentation.py`. This will generate the following augmented training data files:
+To run data augmentation on the files in `data/`, run the file `DataAugmentation.py`. This will generate the following 
+augmented training data files:
 * augmented-arguments-training.tsv
 * augmented-labels-training.tsv
 
@@ -65,21 +71,28 @@ human-value-detection
 └── main.py
 ```
 
-The `data/` folder contains the .tsv files containing the arguments and their respective labels (see 'Usage'). The data is loaded as a tensor for PyTorch in `data_preprocessing.py` and augmented in `LoadData.py` and `DataAugmentation.py`.
+The `data/` folder contains the .tsv files containing the arguments and their respective labels (see 'Usage'). The data 
+is loaded as a tensor for PyTorch in `data_preprocessing.py` and augmented in `LoadData.py` and `DataAugmentation.py`.
 
-The `models/` folder contains the .pt PyTorch models that are generated after finetuning DeBERTa to solve this task. The models saved are the best ones (i.e. the model configuration where F1 score for the validation set was maximal.) The models are made in `model_making.py`.
+The `models/` folder contains the .pt PyTorch models that are generated after finetuning DeBERTa to solve this task. The 
+models saved are the best ones (i.e. the model configuration where F1 score for the validation set was maximal.) The 
+models are made in `model_making.py`.
 
-The `plots/` folder contains the loss curves generated during training and validation. These plots are generated in `visualisation.py`.
+The `plots/` folder contains the loss curves generated during training and validation. These plots are generated in 
+`visualisation.py`.
 
-The `result_metrics/` folder contains lists of F1 scores and loss values that are generated to make plots. E.g. the list of training losses per epoch are stored such that they can be plotted later. These lists are stored in `store_metrics.py`.
+The `result_metrics/` folder contains lists of F1 scores and loss values that are generated to make plots. E.g. the list 
+of training losses per epoch are stored such that they can be plotted later. These lists are stored in `store_metrics.py`.
 
 # Design Decisions
 ## Batch size
-The batch size during model training is set at 16, as this is the max size that didn't run out of memory on the test computer.
+The batch size during model training is set at 16, as this is the max size that didn't run out of memory on the test 
+computer.
 
 ## Data Augmentation
 
-Training the models 3 times with learning rate 5e-5 and patience 10 and samples averaging the F1 scores, we obtained the following mean and standard deviations to 3 significant figures:
+Training the models 3 times with learning rate 5e-5 and patience 10 and samples averaging the F1 scores, we obtained the 
+following mean and standard deviations to 3 significant figures:
 
 | With data augmentation | Without data augmentation |
 |------------------------|---------------------------|
@@ -89,7 +102,8 @@ Performing a paired t-test results in a p-value of: 0.910.
 As this difference is insignificant, we design the training of the final model without data augmentation. 
 
 ## Optimal Hyperparameters
-After running grid search while varying the hyperparameters `learning rate` and `patience`, we obtained the samples average F1 scores (averaged over 3 runs) with standard deviations reported in the table below to 3 significant figures:
+After running grid search while varying the hyperparameters `learning rate` and `patience`, we obtained the samples 
+average F1 scores (averaged over 3 runs) with standard deviations reported in the table below to 3 significant figures:
 
 | Patience\Learning rate | __3__              | __4__            | __10__            | __11__           | __12__          |
 |------------------------|--------------------|------------------|-------------------|------------------|-----------------|
@@ -97,10 +111,12 @@ After running grid search while varying the hyperparameters `learning rate` and 
 | __5e-6__               | 0.483   (±0.00676) | 0.491  (±0.0143) | 0.489   (±0.0113) | 0.502 (±0.00685) | x               |
 | __5e-7__               | 0.418   (±0.0110)  | 0.417  (±0.0184) | 0.427  (±0.00700) | 0.450 (±0.0105)         | x               |
 
-Learning rates larger than 5e-4 gave F1 scores 0 on the validation set so were not explored further as the learning process was too jumpy.
+Learning rates larger than 5e-4 gave F1 scores 0 on the validation set so were not explored further as the learning 
+process was too jumpy.
 
 # Results
-The best model uses a learning rate of 5e-5 and a value of 11 for patience. On the test set, this model gives a samples average F1 score of __0.548__. Below are the results per value:
+The best model uses a learning rate of 5e-5 and a value of 11 for patience. On the test set, this model gives a samples 
+average F1 score of __0.548__. Below are the results per value:
 
 | __Value__                     | __Precision__ | __Recall__ | __F1-score__ | __Number of instances in test set__ |
 |-------------------------------|---------------|------------|--------------|-------------------------------------|
@@ -129,7 +145,8 @@ The best model uses a learning rate of 5e-5 and a value of 11 for patience. On t
 | __Weighted average__          |      0.56	    |    0.53    |	   0.52     |               	                    |
 | __Samples average__           |      0.59	    |    0.59    |	   0.55     |               	                    |
 
-There seems to be a strong correlation between the number of training instances per value and the F1 score of those values. We calculated this from the Spearson Correlation Coefficient, which is is 0.712 (p < 0.001).
+There seems to be a strong correlation between the number of training instances per value and the F1 score of those 
+values. We calculated this from the Spearson Correlation Coefficient, which is is 0.712 (p < 0.001).
 
 # References
 
